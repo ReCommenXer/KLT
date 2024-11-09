@@ -3318,7 +3318,6 @@ spawn(function()
                 -- ตรวจสอบการเกิดของ SeaKing
                 local seaMonster = workspace.SeaMonster
                 local seaKing = seaMonster and seaMonster:FindFirstChild("SeaKing")
-                
                 if seaKing and seaKing.Humanoid.Health > 0 then
                     -- ถ้า SeaKing เกิดแล้ว
                     repeat
@@ -3497,22 +3496,26 @@ Main:AddDropdownRight("Select Method",{"Behind","Below","Upper"},_G.SaveSettings
 end)
 
 spawn(function()
-	while wait(1) do 
-		pcall(function()
-			if Select_Method == "Behind" then
-				MethodFarm = CFrame.new(0,0,DistanceMob)
-			elseif Select_Method == "Below" then
-				MethodFarm = CFrame.new(0,-DistanceMob,0) * CFrame.Angles(math.rad(90),0,0)
-			elseif Select_Method == "Upper" then
-				MethodFarm = CFrame.new(0,DistanceMob,0)  * CFrame.Angles(math.rad(-90),0,0)
-			else
-				MethodFarm = CFrame.new(0,DistanceMob,0)  * CFrame.Angles(math.rad(-90),0,0)
-			end
-		end)
-	end
+    while wait(1) do 
+        pcall(function()
+            if Select_Method == "Behind" then
+                -- ไปด้านหลัง (Z)
+                MethodFarm = CFrame.new(0, 0, DistanceMob) -- กำหนดพิกัดที่ด้านหลัง
+            elseif Select_Method == "Below" then
+                -- ไปข้างล่าง (Y) และหมุน 90 องศาในแกน X (เพื่อหมุนจากด้านล่าง)
+                MethodFarm = CFrame.new(0, -DistanceMob, 0) * CFrame.Angles(math.rad(90), 0, 0)
+            elseif Select_Method == "Upper" then
+                -- ไปข้างบน (Y) และหมุน -90 องศาในแกน X (เพื่อหมุนจากด้านบน)
+                MethodFarm = CFrame.new(0, DistanceMob, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+            else
+                -- ค่าพื้นฐาน (หากไม่ตรงกับ "Behind", "Below", "Upper")
+				MethodFarm = CFrame.new(0, 0, DistanceMob) -- กำหนดพิกัดที่ด้านหลัง
+            end
+        end)
+    end
 end)
 
-Main:AddSliderRight("Distance",1,100,_G.SaveSettings.DistanceMob,function(value)
+Main:AddSliderRight("Distance",1,100,DistanceMob,function(value)
 	DistanceMob = value
 	_G.SaveSettings.DistanceMob = DistanceMob
 	SaveSetting()
