@@ -3354,6 +3354,7 @@ spawn(function()
 							local island = game:GetService("Workspace").Island:FindFirstChild(islandName)
 							if island then
 								TP(island.ChestSpawner.CFrame * CFrame.new(0, 0, 2))
+							end
                         end
                     end
                 else
