@@ -10,7 +10,7 @@ function loadcheck()
     end
     end
     pcall(function()
-        _G.SaveSettings = {Select_Weapon = "",Select_Method = "",DistanceMob = "10",Auto_Sea_King = false,Auto_Ghost_Ship = false,Auto_Hydra = false,Hop_Mix = false,Auto_Hydra_Hop = false,Auto_Sea_King_Hop = false,Auto_Ghost_Ship_Hop = false,Auto_Skill = false,Black_Screen = false
+        _G.SaveSettings = {Select_Weapon = "",Select_Method = "",DistanceMob = "10",Auto_Sea_King = false,Auto_Ghost_Ship = false,Auto_Hydra = false,Hop_Mix = false,Auto_Hydra_Hop = false,Auto_Sea_King_Hop = false,Auto_Ghost_Ship_Hop = false,Auto_Skill = false,Black_Screen = false,Auto_Haki = false,Auto_Mr_Morther_Hop = false,Auto_Mr_Morther = false
         }
     end)
     function LoadSetting()
@@ -2905,9 +2905,8 @@ spawn(function()
                 local player = game:GetService("Players").LocalPlayer
                 local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
                 local noclip = humanoidRootPart and humanoidRootPart:FindFirstChild("BodyClip")
-                if noclip then
                     noclip:Destroy()
-                end
+                
             end
         end
     end)
@@ -3018,28 +3017,11 @@ function Hop()
 	Teleport()
 end
 
-function UseSkill(skill)
-	Tool = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool")
-	local args = {
-		[1] = tostring(TypeWeapon) .. "_" .. tostring(WeaPon_Select) .. "_" .. tostring(skill), -- ใส่ค่าตัวแปรเข้าไปใน string โดยตรง
-		[2] = {
-			["MouseHit"] = CFrame.new(v.HumanoidRootPart.CFrame), -- ไม่จำเป็นต้องใส่ CFrame.new เนื่องจากเรากำหนดค่าให้แล้ว
-			["Type"] = "Down"
-		}
-	}
-	
-	game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
-		task.wait()
-		local args = {
-			[1] = tostring(TypeWeapon) .. "_" .. tostring(WeaPon_Select) .. "_" .. tostring(skill), -- ใส่ค่าตัวแปรเข้าไปใน string โดยตรง
-			[2] = {
-				["MouseHit"] = CFrame.new(v.HumanoidRootPart.CFrame), -- ไม่จำเป็นต้องใส่ CFrame.new เนื่องจากเรากำหนดค่าให้แล้ว
-				["Type"] = "Up"
-			}
-		}
-		
-		game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
-		end
+function UseSkill(skill,CFrameMon)
+	game:GetService("ReplicatedStorage").Chest.Remotes.Functions.SkillAction:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { Type = "Down", MouseHit = CFrame.new(CFrameMon) * CFrame.Angles(0, 0, 0) })
+	task.wait()
+game:GetService("ReplicatedStorage").Chest.Remotes.Functions.SkillAction:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { Type = "Up", MouseHit = CFrame.new(CFrameMon) * CFrame.Angles(0, 0, 0) })
+end
 
 
 ------------------------------------------------- Ui ----------------------------------------------------------
@@ -3175,7 +3157,7 @@ Main:AddToggleLeft("Auto Sea thi")
 
 Main:AddSeperatorLeft("Sea Event")
 
-Main:AddToggleLeft("Hop Mix",Hop_Mix,function(a)
+Main:AddToggleLeft("Hop Mix",_G.SaveSettings.Hop_Mix,function(a)
 	Hop_Mix = a
 		_G.SaveSettings.Hop_Mix = Hop_Mix
 	SaveSetting()
@@ -3231,15 +3213,13 @@ spawn(function()
                     -- ถ้า Hydra เกิดแล้ว ทำการเทเลพอร์ตไปที่ Hydra
                     repeat
                         wait(0.1) -- เพิ่มการหน่วงเวลาให้เหมาะสม
-                        AutoHaki()
-						AutoKen()
                         EquipWeapon(WeaPon_Select)
                         TP(hydra.HumanoidRootPart.CFrame * MethodFarm)
                         if Auto_Skill then
-                            UseSkill("Z")
-                            UseSkill("X")
-                            UseSkill("C")
-                            UseSkill("V")
+                            UseSkill("Z",hydra.HumanoidRootPart.CFrame)
+                            UseSkill("X",hydra.HumanoidRootPart.CFrame)
+                            UseSkill("C",hydra.HumanoidRootPart.CFrame)
+                            UseSkill("V",hydra.HumanoidRootPart.CFrame)
                         end
                     until hydra.Humanoid.Health <= 0 or not Auto_Hydra or not game:GetService("Workspace").SeaMonster:FindFirstChild("HydraSeaKing")
                     
@@ -3322,15 +3302,13 @@ spawn(function()
                     -- ถ้า SeaKing เกิดแล้ว
                     repeat
                         wait(0.1) -- รอระหว่างการดำเนินการ
-                        AutoHaki()
-						AutoKen()
                         EquipWeapon(WeaPon_Select)
                         TP(seaKing.HumanoidRootPart.CFrame * MethodFarm)
                         if Auto_Skill then
-                            UseSkill("Z")
-                            UseSkill("X")
-                            UseSkill("C")
-                            UseSkill("V")
+                            UseSkill("Z",seaKing.HumanoidRootPart.CFrame)
+                            UseSkill("X",seaKing.HumanoidRootPart.CFrame)
+                            UseSkill("C",seaKing.HumanoidRootPart.CFrame)
+                            UseSkill("V",seaKing.HumanoidRootPart.CFrame)
                         end
                     until seaKing.Humanoid.Health <= 0 or not Auto_Sea_King or not seaMonster:FindFirstChild("SeaKing")
 
@@ -3415,14 +3393,13 @@ spawn(function()
                         if v == ghostShip and v.Humanoid.Health > 0 then
                             repeat
                                 wait()
-                                AutoHaki()
                                 EquipWeapon(WeaPon_Select)
                                 TP(v.HumanoidRootPart.CFrame * MethodFarm)
                                 if Auto_Skill then 
-                                    UseSkill("Z")
-                                    UseSkill("X")
-                                    UseSkill("C")
-                                    UseSkill("V")
+									UseSkill("Z",v.HumanoidRootPart.CFrame)
+									UseSkill("X",v.HumanoidRootPart.CFrame)
+									UseSkill("C",v.HumanoidRootPart.CFrame)
+									UseSkill("V",v.HumanoidRootPart.CFrame)
                                 end
                             until v.Humanoid.Health <= 0 or not Auto_Ghost_Ship or not game:GetService("Workspace").GhostMonster:FindFirstChild("Ghost Ship") or game:GetService("Workspace"):FindFirstChild("Chest1")
                         end
@@ -3461,11 +3438,42 @@ end)
         end
     end)
 
+	BigMom = Main:AddLabelLeft("")
+  
+
+function BigMomSent()
+if game:GetService("ReplicatedStorage").MOB:FindFirstChild("Mr. Morther [Lv. 7500]") or workspace.Monster.Boss:FindFirstChild("Mr. Morther [Lv. 7500]") then
+	BigMom:Set("Mr. Morther : ✔")   
+   else
+	BigMom:Set("Mr. Morther : ✖")    
+   end
+   end
+
+spawn(function()
+while task.wait() do
+pcall(function()
+    BigMomSent()
+end)
+end
+end)
+
+Main:AddToggleLeft("Auto Mr. Morther",_G.SaveSettings.Auto_Mr_Morther,function(a)
+	Auto_Mr_Morther = a
+	_G.SaveSettings.Auto_Mr_Morther = Auto_Mr_Morther
+	SaveSetting()
+end)
+
+Main:AddToggleLeft("Auto Mr. Morther Hop",_G.SaveSettings.Auto_Mr_Morther_Hop,function(a)
+	Auto_Mr_Morther_Hop = a
+	_G.SaveSettings.Auto_Mr_Morther_Hop = Auto_Mr_Morther_Hop
+	SaveSetting()
+end)
+
 ------------------------------------------------------------------ Right ------------------------------------------------------------------
 
 Main:AddDropdownRight("Select Weapon", {"Melee","Sword","Fruit"},_G.SaveSettings.Select_Weapon, function(value)
     Select_Weapon = value
-	_G.SaveSettings.elect_Weapon = Select_Weapon
+	_G.SaveSettings.Select_Weapon = Select_Weapon
 	SaveSetting()
 end)
 
@@ -3515,11 +3523,34 @@ spawn(function()
     end
 end)
 
-Main:AddSliderRight("Distance",1,100,DistanceMob,function(value)
+Main:AddSliderRight("Distance",1,100,_G.SaveSettings.DistanceMob,function(value)
 	DistanceMob = value
 	_G.SaveSettings.DistanceMob = DistanceMob
 	SaveSetting()
 end)
+
+Main:AddToggleRight("Auto Haki",_G.SaveSettings.Auto_Haki,function(a)
+	Auto_Haki = a
+	_G.SaveSettings.Auto_Skill = Auto_Haki
+	SaveSetting()
+end)
+
+spawn(function()
+	while wait() do
+		pcall(function()
+		if Auto_Haki then
+			local NamePlayer = game.Players.LocalPlayer.Name
+			if game:GetService("Workspace").PlayerCharacters:FindFirstChild(NamePlayer).Services.Haki.Value == 0  then
+				game:GetService("ReplicatedStorage").Chest.Remotes.Events.Armament:FireServer()
+				if game:GetService("Workspace").PlayerCharacters:FindFirstChild(NamePlayer).Services.KenOpen.Value == false then
+					game:GetService("ReplicatedStorage").Chest.Remotes.Functions.KenEvent:InvokeServer()	
+				end
+			end
+			end
+		end)
+	end
+end)
+
 
 Main:AddToggleRight("Auto Skill",_G.SaveSettings.Auto_Skill,function(a)
 	Auto_Skill = a
@@ -3667,7 +3698,7 @@ Player:AddButtonLeft("Teleport Player",function()
 end)
 
 Misc:AddButtonRight("Rejoin Server",function()
-	game:GetService("TeleportService"):Teleport(game.PlaceId, game.Jobid)
+	game:GetService("TeleportService"):TeleportToPlaceInstance(MapPlaceId, game.Jobid)
 end)
 
 Misc:AddButtonRight("Server Hop",function()
