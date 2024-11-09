@@ -1,15 +1,3 @@
-if Mix_Function_SeaEvent then
-	Hop_Mix = true
-	Auto_Hydra = true
-	Auto_Sea_King = true
-	Auto_Ghost_Ship = true
-	Select_Weapon = "Sword"
-	Auto_Skill = true
-	Black_Screen = true
-	Walk_On_Water = true
-	Select_Method = "Upper"
-end
-
 repeat wait() until game:IsLoaded()
 repeat wait() until game:GetService("Players")
 
@@ -25,7 +13,7 @@ function loadcheck()
         _G.SaveSettings = {
             Select_Weapon = "",
 			Select_Method = "",
-			DistanceMob = "",
+			DistanceMob = "10",
 			Auto_Sea_King = false,
 			Auto_Ghost_Ship = false,
 			Auto_Hydra = false,
@@ -2876,12 +2864,23 @@ spawn(function()
     end
 end)
  
- local NamePlayer = game.Players.LocalPlayer.Name
+
  
 function AutoHaki()
 	pcall(function()
+		local NamePlayer = game.Players.LocalPlayer.Name
 		if game:GetService("Workspace").PlayerCharacters.NamePlayer.Services.Haki.Value == 0  then
-			game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("Armament"):FireServer()
+			game:GetService("ReplicatedStorage").Chest.Remotes.Events.Armament:FireServer()
+			wait(6)
+		end
+	end)
+end
+
+function AutoKen()
+	pcall(function()
+		local NamePlayer = game.Players.LocalPlayer.Name
+		if workspace.PlayerCharacters.NamePlayer.Services.KenOpen.Value == 0  then
+			game:GetService("ReplicatedStorage").Chest.Remotes.Functions.KenEvent:InvokeServer()
 			wait(6)
 		end
 	end)
@@ -3234,48 +3233,37 @@ Main:AddToggleLeft("Auto Hydra",Auto_Hydra,function(a)
 	SaveSetting()
 end)
 
-
 spawn(function()
-	while wait() do
-		if Auto_Hydra then
-			pcall(function()
-				if not game:GetService("Workspace").SeaMonster:FindFirstChild("HydraSeaKing") then
-					   if game:GetService("Workspace").Island:FindFirstChild("Sea King Thunder") then
-							TP(game:GetService("Workspace").Island:FindFirstChild("Sea King Thunder").HydraStand.CFrame)
-						elseif game:GetService("Workspace").Island:FindFirstChild("Sea King Lava") then
-						TP(game:GetService("Workspace").Island:FindFirstChild("Sea King Lava").HydraStand.CFrame)
-						elseif game:GetService("Workspace").Island:FindFirstChild("Sea King Water") then
-							TP(game:GetService("Workspace").Island:FindFirstChild("Sea King Water").HydraStand.CFrame)
-							
-						end
-						end
-				end)
-			end
-	end
-end)
-
-spawn(function()
-    while wait(0) do
+    while wait(1) do
         if Auto_Hydra then
             pcall(function()
-                for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren()) do
-                    if v.Name == "HydraSeaKing" then
-                        repeat wait(0)
-                            AutoHaki()
-                            EquipWeapon(WeaPon_Select)
-                            TP(v.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90), 0, 0) * CFrame.new(0,75,0))
-                            if Auto_Skill then 
-                                UseSkill("Z")
-                                UseSkill("X")
-                                UseSkill("C")
-                                UseSkill("V")
-                            end
-                        until v.Humanoid.Health <= 0 or not Auto_Hydra or not game:GetService("Workspace").SeaMonster:FindFirstChild("HydraSeaKing")                       
+                -- ตรวจสอบ Hydra ว่าเกิดขึ้นหรือไม่
+                local hydra = game:GetService("Workspace").SeaMonster:FindFirstChild("HydraSeaKing")
+                if hydra then
+                    -- ถ้า Hydra เกิดแล้ว ทำการเทเลพอร์ตไปที่ Hydra
+                    repeat
+                        wait(0.1) -- เพิ่มการหน่วงเวลาให้เหมาะสม
+                        AutoHaki()
+						AutoKen()
+                        EquipWeapon(WeaPon_Select)
+                        TP(hydra.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90), 0, 0) * CFrame.new(0, 75, 0))
+                        if Auto_Skill then
+                            UseSkill("Z")
+                            UseSkill("X")
+                            UseSkill("C")
+                            UseSkill("V")
+                        end
+                    until hydra.Humanoid.Health <= 0 or not Auto_Hydra or not game:GetService("Workspace").SeaMonster:FindFirstChild("HydraSeaKing")
+                    
+                    -- หาก Hydra ตายแล้ว, เทเลพอร์ตไปที่กล่อง
+                    if hydra.Humanoid.Health <= 0 then
+                        local lootBox = game:GetService("Workspace").SeaMonster:FindFirstChild("LootBox") -- สมมติว่าชื่อกล่องคือ LootBox
+                        if lootBox then
+                            TP(lootBox.CFrame)
+                        end
                     end
-                end
-
-                -- ตรวจสอบสถานะของ Sea King และทำการเลือกที่จะ TP ไปยังสถานที่เหมาะสม
-                if not game:GetService("Workspace").SeaMonster:FindFirstChild("HydraSeaKing") then
+                else
+                    -- ถ้า Hydra ไม่เกิด แต่มีเกาะ Hydra, เทเลพอร์ตไปที่เกาะ
                     local seaKingTypes = {"Sea King Thunder", "Sea King Lava", "Sea King Water"}
                     for _, seaKingType in ipairs(seaKingTypes) do
                         local seaKing = game:GetService("Workspace").Island:FindFirstChild(seaKingType)
@@ -3335,51 +3323,41 @@ Main:AddToggleLeft("Auto Sea King",Auto_Sea_King,function(a)
 	SaveSetting()
 end)
 
-
 spawn(function()
-	while wait() do
-		if Auto_Sea_King then
-			pcall(function()
-				if not game:GetService("Workspace").SeaMonster:FindFirstChild("SeaKing") then
-						if game:GetService("Workspace").Island:FindFirstChild("Legacy Island1") then
-							TP(game:GetService("Workspace").Island:FindFirstChild("Legacy Island1").ChestSpawner.CFrame * CFrame.new(0,0,2))
-						elseif game:GetService("Workspace").Island:FindFirstChild("Legacy Island2") then
-							TP(game:GetService("Workspace").Island:FindFirstChild("Legacy Island2").ChestSpawner.CFrame * CFrame.new(0,0,2))
-						elseif game:GetService("Workspace").Island:FindFirstChild("Legacy Island3") then
-							TP(game:GetService("Workspace").Island:FindFirstChild("Legacy Island3").ChestSpawner.CFrame * CFrame.new(0,0,2))
-						elseif game:GetService("Workspace").Island:FindFirstChild("Legacy Island4") then
-							TP(game:GetService("Workspace").Island:FindFirstChild("Legacy Island4").ChestSpawner.CFrame * CFrame.new(0,0,2))
-						end
-						end
-				end)
-			end
-	end
-end)
-
-spawn(function()
-    while wait(0) do
+    while wait(1) do
         if Auto_Sea_King then
             pcall(function()
+                -- ตรวจสอบการเกิดของ SeaKing
                 local seaMonster = workspace.SeaMonster
-                if seaMonster then
-                    for i, v in pairs(seaMonster:GetChildren()) do
-                        if v.Name == "SeaKing" or v.Humanoid.Health > 0 then
-                            repeat
-                                wait(0)
-                                AutoHaki()
-                                EquipWeapon(WeaPon_Select)
-                                TP(v.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90), 0, 0) - Vector3.new(0, 25, 0))
-                                if Auto_Skill then 
-                                    UseSkill("Z")
-                                    UseSkill("X")
-                                    UseSkill("C")
-                                    UseSkill("V")
-                                end
-                            until v.Humanoid.Health <= 0 or not Auto_Sea_King or not seaMonster:FindFirstChild("SeaKing")                      
+                local seaKing = seaMonster and seaMonster:FindFirstChild("SeaKing")
+                
+                if seaKing and seaKing.Humanoid.Health > 0 then
+                    -- ถ้า SeaKing เกิดแล้ว
+                    repeat
+                        wait(0.1) -- รอระหว่างการดำเนินการ
+                        AutoHaki()
+						AutoKen()
+                        EquipWeapon(WeaPon_Select)
+                        TP(seaKing.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90), 0, 0) - Vector3.new(0, 25, 0))
+                        if Auto_Skill then
+                            UseSkill("Z")
+                            UseSkill("X")
+                            UseSkill("C")
+                            UseSkill("V")
+                        end
+                    until seaKing.Humanoid.Health <= 0 or not Auto_Sea_King or not seaMonster:FindFirstChild("SeaKing")
+
+                    -- ถ้า SeaKing ตายแล้ว, ทำการเทเลพอร์ตไปที่กล่อง
+                    if seaKing.Humanoid.Health <= 0 then
+						local islandNames = {"Legacy Island1", "Legacy Island2", "Legacy Island3", "Legacy Island4"}
+						for _, islandName in ipairs(islandNames) do
+							local island = game:GetService("Workspace").Island:FindFirstChild(islandName)
+							if island then
+								TP(island.ChestSpawner.CFrame * CFrame.new(0, 0, 2))
                         end
                     end
                 else
-                    -- ตรวจสอบเกาะที่มีชื่อ Legacy Island1, Legacy Island2, Legacy Island3, และ Legacy Island4
+                    -- ถ้า SeaKing ยังไม่เกิด, ให้ไปที่เกาะ
                     local islandNames = {"Legacy Island1", "Legacy Island2", "Legacy Island3", "Legacy Island4"}
                     for _, islandName in ipairs(islandNames) do
                         local island = game:GetService("Workspace").Island:FindFirstChild(islandName)
@@ -3544,7 +3522,7 @@ spawn(function()
 		end)
 	end
 end)
-_G.SaveSettings.DistanceMob = 10
+
 Main:AddSliderRight("Distance",1,100,_G.SaveSettings.DistanceMob,function(value)
 	DistanceMob = value
 	_G.SaveSettings.DistanceMob = DistanceMob
