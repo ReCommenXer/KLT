@@ -10,19 +10,7 @@ function loadcheck()
     end
     end
     pcall(function()
-        _G.SaveSettings = {
-            Select_Weapon = "",
-			Select_Method = "",
-			DistanceMob = "10",
-			Auto_Sea_King = false,
-			Auto_Ghost_Ship = false,
-			Auto_Hydra = false,
-			Hop_Mix = false,
-			Auto_Hydra_Hop = false,
-			Auto_Sea_King_Hop = false,
-			Auto_Ghost_Ship_Hop = false,
-			Auto_Skill = false,
-			Black_Screen = false
+        _G.SaveSettings = {Select_Weapon = "",Select_Method = "",DistanceMob = "10",Auto_Sea_King = false,Auto_Ghost_Ship = false,Auto_Hydra = false,Hop_Mix = false,Auto_Hydra_Hop = false,Auto_Sea_King_Hop = false,Auto_Ghost_Ship_Hop = false,Auto_Skill = false,Black_Screen = false
         }
     end)
     function LoadSetting()
@@ -3227,7 +3215,7 @@ Hydra = Main:AddLabelLeft("")
          end)
 
 
-Main:AddToggleLeft("Auto Hydra",Auto_Hydra,function(a)
+Main:AddToggleLeft("Auto Hydra",_G.SaveSettings.Auto_Hydra,function(a)
     Auto_Hydra = a
 	_G.SaveSettings.Auto_Hydra = Auto_Hydra
 	SaveSetting()
@@ -3246,7 +3234,7 @@ spawn(function()
                         AutoHaki()
 						AutoKen()
                         EquipWeapon(WeaPon_Select)
-                        TP(hydra.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90), 0, 0) * CFrame.new(0, 75, 0))
+                        TP(hydra.HumanoidRootPart.CFrame * MethodFarm)
                         if Auto_Skill then
                             UseSkill("Z")
                             UseSkill("X")
@@ -3279,7 +3267,7 @@ spawn(function()
 end)
 
 
-Main:AddToggleLeft("Auto Hydra Hop",Auto_Hydra_Hop,function(a)
+Main:AddToggleLeft("Auto Hydra Hop",_G.SaveSettings.Auto_Hydra_Hop,function(a)
     Auto_Hydra_Hop = a
 	_G.SaveSettings.Auto_Hydra_Hop = Auto_Hydra_Hop
 	SaveSetting()
@@ -3317,7 +3305,7 @@ end)
 end
 end)
 
-Main:AddToggleLeft("Auto Sea King",Auto_Sea_King,function(a)
+Main:AddToggleLeft("Auto Sea King",_G.SaveSettings.Auto_Sea_King,function(a)
     Auto_Sea_King = a
 	_G.SaveSettings.Auto_Sea_King = Auto_Sea_King
 	SaveSetting()
@@ -3338,7 +3326,7 @@ spawn(function()
                         AutoHaki()
 						AutoKen()
                         EquipWeapon(WeaPon_Select)
-                        TP(seaKing.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90), 0, 0) - Vector3.new(0, 25, 0))
+                        TP(seaKing.HumanoidRootPart.CFrame * MethodFarm)
                         if Auto_Skill then
                             UseSkill("Z")
                             UseSkill("X")
@@ -3374,7 +3362,7 @@ spawn(function()
 end)
 
 
-Main:AddToggleLeft("Auto Sea King Hop",Auto_Sea_King_Hop,function(a)
+Main:AddToggleLeft("Auto Sea King Hop",_G.SaveSettings.Auto_Sea_King_Hop,function(a)
     Auto_Sea_King_Hop = a
 	_G.SaveSettings.Auto_Sea_King_Hop = Auto_Sea_King_Hop
 	SaveSetting()
@@ -3413,7 +3401,7 @@ GhostShip = Main:AddLabelLeft("")
         end
          end)
 
-Main:AddToggleLeft("Auto Ghost Ship",Auto_Ghost_Ship,function(a)
+Main:AddToggleLeft("Auto Ghost Ship",_G.SaveSettings.Auto_Ghost_Ship,function(a)
     Auto_Ghost_Ship = a
 	_G.SaveSettings.Hop_Mix = Hop_Mix
 	SaveSetting()
@@ -3430,7 +3418,7 @@ spawn(function()
                                 wait()
                                 AutoHaki()
                                 EquipWeapon(WeaPon_Select)
-                                TP(v.HumanoidRootPart.CFrame * CFrame.new(0,10,0))
+                                TP(v.HumanoidRootPart.CFrame * MethodFarm)
                                 if Auto_Skill then 
                                     UseSkill("Z")
                                     UseSkill("X")
@@ -3453,7 +3441,7 @@ spawn(function()
     end
 end)
 
-Main:AddToggleLeft("Auto Ghost Ship Hop",Auto_Ghost_Ship_Hop,function(a)
+Main:AddToggleLeft("Auto Ghost Ship Hop",_G.SaveSettings.Auto_Ghost_Ship_Hop,function(a)
     Auto_Ghost_Ship_Hop = a
 	_G.SaveSettings.Hop_Mix = Hop_Mix
 	SaveSetting()
@@ -3476,7 +3464,7 @@ end)
 
 ------------------------------------------------------------------ Right ------------------------------------------------------------------
 
-Main:AddDropdownRight("Select Weapon", {"Melee","Sword","Fruit"},_G.SaveSettings.elect_Weapon, function(value)
+Main:AddDropdownRight("Select Weapon", {"Melee","Sword","Fruit"},_G.SaveSettings.Select_Weapon, function(value)
     Select_Weapon = value
 	_G.SaveSettings.elect_Weapon = Select_Weapon
 	SaveSetting()
@@ -3530,8 +3518,10 @@ Main:AddSliderRight("Distance",1,100,_G.SaveSettings.DistanceMob,function(value)
 	SaveSetting()
 end)
 
-Main:AddToggleRight("Auto Skill",Auto_Skill,function(a)
+Main:AddToggleRight("Auto Skill",_G.SaveSettings.Auto_Skill,function(a)
 	Auto_Skill = a
+	_G.SaveSettings.Auto_Skill = Auto_Skill
+	SaveSetting()
 end)
 
 local player = game:GetService("Players").LocalPlayer
@@ -3556,8 +3546,10 @@ local blackscreen = function(enable)
 end
 
 
-Main:AddToggleRight("Black Screen",Black_Screen,function(a)
+Main:AddToggleRight("Black Screen",_G.SaveSettings.Black_Screen,function(a)
 	Black_Screen = a
+	_G.SaveSettings.Black_Screen = Black_Screen
+	SaveSetting()
 	if Black_Screen == true then
 		game:GetService("RunService"):Set3dRenderingEnabled(false)
 		wait()
