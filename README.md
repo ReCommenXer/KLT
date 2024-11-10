@@ -3486,10 +3486,10 @@ end)
     end)
 
 	BigMom = Main:AddLabelLeft("")
-  
+	game:GetService("ReplicatedStorage").MOB["Ms. Mother [Lv. 7500]"]
 
 function BigMomSent()
-if game:GetService("ReplicatedStorage").MOB:FindFirstChild("Mr. Morther [Lv. 7500]") or workspace.Monster.Boss:FindFirstChild("Mr. Morther [Lv. 7500]") then
+if game:GetService("ReplicatedStorage").MOB:FindFirstChild("Ms. Mother [Lv. 7500]") or workspace.Monster.Boss:FindFirstChild("Ms. Mother [Lv. 7500]") then
 	BigMom:Set("Mr. Morther : ✔")   
    else
 	BigMom:Set("Mr. Morther : ✖")    
