@@ -3001,17 +3001,16 @@ function UseSkill(skill, CFrameMon)
 
     -- ส่งคำสั่ง "Down"
     remote:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { 
-        Type = "Down", 
-        MouseHit = CFrameMon * CFrame.Angles(0, 0, 0) 
-    })
-
-    task.wait()
-
-    -- ส่งคำสั่ง "Up"
-    remote:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { 
         Type = "Up", 
         MouseHit = CFrameMon * CFrame.Angles(0, 0, 0) 
     })
+
+    -- ส่งคำสั่ง "Up"
+    remote:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { 
+        Type = "Down", 
+        MouseHit = CFrameMon * CFrame.Angles(0, 0, 0) 
+    })
+	wait(0.1)
 end
 
 
@@ -3044,9 +3043,9 @@ function SeaChackSent()
     local SKVisible = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible
 
     -- ปรับข้อความใน SeaChack ตามเงื่อนไข
-    if HDVisible and not SKVisible then
+    if HDVisible == true and SKVisible == false then
         SeaChack:Set("Hydra       : " .. TimeSea)
-    elseif SKVisible and not HDVisible then
+	elseif SKVisible == true and HDVisible == false then
         SeaChack:Set("Sea King    : " .. TimeSea)
     end
 end
@@ -3253,9 +3252,13 @@ spawn(function()
                         TP(hydra.HumanoidRootPart.CFrame * MethodFarm)
                         if Auto_Skill then
                             UseSkill("Z",hydra.HumanoidRootPart.CFrame)
+							wait(0.1)
                             UseSkill("X",hydra.HumanoidRootPart.CFrame)
+							wait(0.1)
                             UseSkill("C",hydra.HumanoidRootPart.CFrame)
+							wait(0.1)
                             UseSkill("V",hydra.HumanoidRootPart.CFrame)
+							wait(0.1)
                         end
                     until hydra.Humanoid.Health <= 0 or not Auto_Hydra or not game:GetService("Workspace").SeaMonster:FindFirstChild("HydraSeaKing")
                     
@@ -3337,14 +3340,18 @@ spawn(function()
                 if seaKing and seaKing.Humanoid.Health > 0 then
                     -- ถ้า SeaKing เกิดแล้ว
                     repeat
-                        wait(0) -- รอระหว่างการดำเนินการ
+                        wait() -- รอระหว่างการดำเนินการ
                         EquipWeapon(WeaPon_Select)
                         TP(seaKing.HumanoidRootPart.CFrame * MethodFarm)
                         if Auto_Skill then
                             UseSkill("Z",seaKing.HumanoidRootPart.CFrame)
+							wait(0.1)
                             UseSkill("X",seaKing.HumanoidRootPart.CFrame)
+							wait(0.1)
                             UseSkill("C",seaKing.HumanoidRootPart.CFrame)
+							wait(0.1)
                             UseSkill("V",seaKing.HumanoidRootPart.CFrame)
+							wait(0.1)
                         end
                     until seaKing.Humanoid.Health <= 0 or not Auto_Sea_King or not seaMonster:FindFirstChild("SeaKing")
 
@@ -3433,9 +3440,13 @@ spawn(function()
                                 TP(v.HumanoidRootPart.CFrame * MethodFarm)
                                 if Auto_Skill then 
 									UseSkill("Z",v.HumanoidRootPart.CFrame)
+									wait(0.1)
 									UseSkill("X",v.HumanoidRootPart.CFrame)
+									wait(0.1)
 									UseSkill("C",v.HumanoidRootPart.CFrame)
+									wait(0.1)
 									UseSkill("V",v.HumanoidRootPart.CFrame)
+									wait(0.1)
                                 end
                             until v.Humanoid.Health <= 0 or not Auto_Ghost_Ship or not game:GetService("Workspace").GhostMonster:FindFirstChild("Ghost Ship") or game:GetService("Workspace"):FindFirstChild("Chest1")
                         end
