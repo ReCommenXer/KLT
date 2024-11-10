@@ -1,6 +1,6 @@
 repeat wait() until game:IsLoaded()
 repeat wait() until game:GetService("Players")
-wait(5)
+
 ----------------------------------- save
 function loadcheck()
     if isfile("RebornXer Hub king Lagacy"..game.Players.LocalPlayer.Name..".json") then
@@ -2841,14 +2841,12 @@ function loadcheck()
 --------------------------------------------- Function ----------------------------------------------
 
 spawn(function()
-    while true do
+    while wait(0) do
         pcall(function()
             if Auto_Click or Auto_Ghost_Ship or Auto_Hydra or Auto_Sea_King then         
-                game:GetService("ReplicatedStorage").Chest.Remotes.Functions.SkillAction:InvokeServer("SW_"..WeaPon_Select.."_M1")
-                game:GetService("ReplicatedStorage").Chest.Remotes.Functions.SkillAction:InvokeServer("FS_"..WeaPon_Select.."_M1")
+                game:GetService("ReplicatedStorage").Chest.Remotes.Functions.SkillAction:InvokeServer(TypeWeapon .."_"..WeaPon_Select.."_M1")
             end
         end)
-        wait(0) -- ปรับค่าเวลาที่รอเป็น 0.1 วินาที (หรือค่าที่ต้องการ)
     end
 end)
  
@@ -2857,19 +2855,16 @@ end)
 
 
 spawn(function()
-    pcall(function()
-        while wait() do -- รอเวลาระหว่างแต่ละรอบ
-            if Auto_Ghost_Ship or Auto_Hydra or Auto_Sea_King then
-                local player = game:GetService("Players").LocalPlayer
-                local character = player.Character
-                local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
-                local humanoid = character and character:FindFirstChild("Humanoid")
-                
-                if humanoidRootPart and humanoid then
-                    -- ใช้ v แทน character
-                    local v = character
+    while wait() do -- รอเวลาระหว่างแต่ละรอบ
+        pcall(function()
+            local player = game:GetService("Players").LocalPlayer
+            local character = player.Character
+            local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+            local humanoid = character and character:FindFirstChild("Humanoid")
 
-                    -- ตรวจสอบว่าไม่มี BodyClip อยู่แล้ว
+            if Auto_Ghost_Ship or Auto_Hydra or Auto_Sea_King then
+                if humanoidRootPart and humanoid then
+                    -- ตรวจสอบว่ามี BodyClip อยู่หรือไม่
                     local noclip = humanoidRootPart:FindFirstChild("BodyClip")
                     if not noclip then
                         local Noclip = Instance.new("BodyVelocity")
@@ -2879,19 +2874,20 @@ spawn(function()
                         Noclip.Velocity = Vector3.new(0, 0, 0)
 
                         -- เปลี่ยนสถานะของ Humanoid เป็น Physics
-                        v.Humanoid:ChangeState(14) -- ใช้ v.Humanoid ตามที่ต้องการ
+                        humanoid:ChangeState(14)
                     end
                 end
             else
-                -- หากปิด Auto_Ghost_Ship, Auto_Hydra หรือ Auto_Sea_King จะทำลาย BodyClip
-                local player = game:GetService("Players").LocalPlayer
-                local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-                local noclip = humanoidRootPart and humanoidRootPart:FindFirstChild("BodyClip")
-                    noclip:Destroy()
-                
+                -- หากปิด Auto_Ghost_Ship, Auto_Hydra หรือ Auto_Sea_King ให้ลบ BodyClip หากมีอยู่
+                if humanoidRootPart then
+                    local noclip = humanoidRootPart:FindFirstChild("BodyClip")
+                    if noclip then
+                        noclip:Destroy()
+                    end
+                end
             end
-        end
-    end)
+        end)
+    end
 end)
 
 
@@ -2919,7 +2915,8 @@ spawn(function()
 			else
 				for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
 					if v:IsA("BasePart") then
-						v.CanCollide = true    
+						v.CanCollide = true   
+						noclip:Destroy() 
 					end
 				end
 			end
@@ -2999,11 +2996,24 @@ function Hop()
 	Teleport()
 end
 
-function UseSkill(skill,CFrameMon)
-	game:GetService("ReplicatedStorage").Chest.Remotes.Functions.SkillAction:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { Type = "Down", MouseHit = CFrame.new(CFrameMon) * CFrame.Angles(0, 0, 0) })
-	task.wait()
-game:GetService("ReplicatedStorage").Chest.Remotes.Functions.SkillAction:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { Type = "Up", MouseHit = CFrame.new(CFrameMon) * CFrame.Angles(0, 0, 0) })
+function UseSkill(skill, CFrameMon)
+    local remote = game:GetService("ReplicatedStorage").Chest.Remotes.Functions.SkillAction
+
+    -- ส่งคำสั่ง "Down"
+    remote:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { 
+        Type = "Down", 
+        MouseHit = CFrameMon * CFrame.Angles(0, 0, 0) 
+    })
+
+    task.wait()
+
+    -- ส่งคำสั่ง "Up"
+    remote:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { 
+        Type = "Up", 
+        MouseHit = CFrameMon * CFrame.Angles(0, 0, 0) 
+    })
 end
+
 
 
 ------------------------------------------------- Ui ----------------------------------------------------------
