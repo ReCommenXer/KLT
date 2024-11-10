@@ -2882,7 +2882,6 @@ spawn(function()
                 if humanoidRootPart then
                     local noclip = humanoidRootPart:FindFirstChild("BodyClip")
                     if noclip then
-                        noclip:Destroy()
                     end
                 end
             end
@@ -2999,18 +2998,21 @@ end
 function UseSkill(skill, CFrameMon)
     local remote = game:GetService("ReplicatedStorage").Chest.Remotes.Functions.SkillAction
 
-    -- ส่งคำสั่ง "Down"
+    -- ส่งคำสั่ง "Up"
     remote:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { 
         Type = "Up", 
         MouseHit = CFrameMon * CFrame.Angles(0, 0, 0) 
     })
+	game:GetService("VirtualInputManager"):SendKeyEvent(true,skill,false,game)
+    -- รอเวลาเล็กน้อยก่อนส่งคำสั่ง "Down"
+	task.wait()-- คุณสามารถปรับเวลาใน wait ได้ตามที่ต้องการ
 
-    -- ส่งคำสั่ง "Up"
+    -- ส่งคำสั่ง "Down"
     remote:InvokeServer(TypeWeapon .. "_" .. WeaPon_Select .. "_" .. skill, { 
         Type = "Down", 
         MouseHit = CFrameMon * CFrame.Angles(0, 0, 0) 
     })
-	wait(0.1)
+	game:GetService("VirtualInputManager"):SendKeyEvent(false,skill,false,game)
 end
 
 
@@ -3019,6 +3021,9 @@ end
 if game.PlaceId == 6381829480 then
 	WorldCheck = 2
 	MapPlaceId = "6381829480"
+elseif game.PlaceId == 4520749081 then
+	WorldCheck = 1
+	MapPlaceId = "4520749081"
 end
 
 local RenUi = Update:AddWindow("RebornXer Hub","10039618734",Enum.KeyCode.RightControl)
@@ -3488,7 +3493,7 @@ end)
 	BigMom = Main:AddLabelLeft("")
 
 function BigMomSent()
-if game:GetService("ReplicatedStorage").MOB:FindFirstChild("Ms. Mother [Lv. 7500]") or workspace.Monster.Boss:FindFirstChild("Ms. Mother [Lv. 7500]") then
+if game:GetService("ReplicatedStorage").MOB:FindFirstChild("Ms. Mother [Lv. 7500]") then
 	BigMom:Set("Mr. Morther : ✔")   
    else
 	BigMom:Set("Mr. Morther : ✖")    
@@ -3508,6 +3513,43 @@ Main:AddToggleLeft("Auto Mr. Morther",_G.SaveSettings.Auto_Mr_Morther,function(a
 	_G.SaveSettings.Auto_Mr_Morther = Auto_Mr_Morther
 	SaveSetting()
 end)
+
+spawn(function()
+	while wait() do
+		pcall(function()
+			if Auto_Mr_Morther then
+				BigmomBoss = workspace.Monster.Boss:FindFirstChild("Ms. Mother [Lv. 7500]")
+				if BigmomBoss then
+					for i,v in pairs(workspace.Monster.Boss:GetChildren()) do
+                        if v == BigmomBoss and v.Humanoid.Health > 0 then
+                            repeat
+                                wait()
+                                EquipWeapon(WeaPon_Select)
+                                TP(v.HumanoidRootPart.CFrame * MethodFarm)
+                                if Auto_Skill then 
+									UseSkill("Z",v.HumanoidRootPart.CFrame)
+									wait(0.1)
+									UseSkill("X",v.HumanoidRootPart.CFrame)
+									wait(0.1)
+									UseSkill("C",v.HumanoidRootPart.CFrame)
+									wait(0.1)
+									UseSkill("V",v.HumanoidRootPart.CFrame)
+									wait(0.1)
+                                end
+                            until v.Humanoid.Health <= 0 or not Auto_Mr_Morther or not BigmomBoss 
+                        end
+                    end
+                elseif game:GetService("ReplicatedStorage").MOB:FindFirstChild("Ms. Mother [Lv. 7500]") then
+                    for i,l in pairs(game.Workspace:GetChildren()) do  
+                            TP(l.WorldPivot)
+
+                    end
+                end
+            end
+        end)
+    end
+end)
+
 
 Main:AddToggleLeft("Auto Mr. Morther Hop",_G.SaveSettings.Auto_Mr_Morther_Hop,function(a)
 	Auto_Mr_Morther_Hop = a
