@@ -10,7 +10,7 @@ function loadcheck()
     end
     end
     pcall(function()
-        _G.SaveSettings = {Select_Weapon = "Sword",Select_Method = "Upper",DistanceMob = "10",Auto_Sea_King = false,Auto_Ghost_Ship = false,Auto_Hydra = false,Hop_Mix = false,Auto_Hydra_Hop = false,Auto_Sea_King_Hop = false,Auto_Ghost_Ship_Hop = false,Auto_Skill = false,Black_Screen = false,Auto_Haki = false,Auto_Mr_Morther_Hop = false,Auto_Mr_Morther = false
+        _G.SaveSettings = {Select_Weapon = "Sword",Select_Method = "Upper",DistanceMob = "10",Auto_Sea_King = false,Auto_Ghost_Ship = false,Auto_Hydra = false,Hop_Mix = false,Auto_Hydra_Hop = false,Auto_Sea_King_Hop = false,Auto_Ghost_Ship_Hop = false,Auto_Skill = false,Black_Screen = false,Auto_Haki = true,Auto_Mr_Morther_Hop = false,Auto_Mr_Morther = false
         }
     end)
     function LoadSetting()
@@ -2854,25 +2854,7 @@ end)
  
 
  
-function AutoHaki()
-	pcall(function()
-		local NamePlayer = game.Players.LocalPlayer.Name
-		if game:GetService("Workspace").PlayerCharacters.NamePlayer.Services.Haki.Value == 0  then
-			game:GetService("ReplicatedStorage").Chest.Remotes.Events.Armament:FireServer()
-			wait(6)
-		end
-	end)
-end
 
-function AutoKen()
-	pcall(function()
-		local NamePlayer = game.Players.LocalPlayer.Name
-		if workspace.PlayerCharacters.NamePlayer.Services.KenOpen.Value == 0  then
-			game:GetService("ReplicatedStorage").Chest.Remotes.Functions.KenEvent:InvokeServer()
-			wait(6)
-		end
-	end)
-end
 
 spawn(function()
     pcall(function()
@@ -3045,13 +3027,13 @@ local Main = RenUi:AddTab("Farm","6026568198")
   
 
              function SeaChackSent()
-				if game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible == true and game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.HDImage.Visible == false then
 				TimeSea = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKTimeLabel.Text
-
-				SeaChack:Set("Sea King    : "..TimeSea)   
-                elseif game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible == false and game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.HDImage.Visible == true then
+				if game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.HDImage.Visible == true and  game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible == false then
 
                     SeaChack:Set("Hydra       : "..TimeSea)    
+				if game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible == true and game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.HDImage.Visible == false then
+				SeaChack:Set("Sea King    : "..TimeSea)   
+                end
                 end
                 end
 
