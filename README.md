@@ -3240,7 +3240,7 @@ Main:AddToggleLeft("Auto Hydra",_G.SaveSettings.Auto_Hydra,function(a)
 end)
 
 spawn(function()
-    while wait(1) do
+    while wait(0) do
         if Auto_Hydra then
             pcall(function()
                 -- ตรวจสอบ Hydra ว่าเกิดขึ้นหรือไม่
@@ -3248,7 +3248,7 @@ spawn(function()
                 if hydra then
                     -- ถ้า Hydra เกิดแล้ว ทำการเทเลพอร์ตไปที่ Hydra
                     repeat
-                        wait(0.1) -- เพิ่มการหน่วงเวลาให้เหมาะสม
+                        wait(0) -- เพิ่มการหน่วงเวลาให้เหมาะสม
                         EquipWeapon(WeaPon_Select)
                         TP(hydra.HumanoidRootPart.CFrame * MethodFarm)
                         if Auto_Skill then
@@ -3328,7 +3328,7 @@ Main:AddToggleLeft("Auto Sea King",_G.SaveSettings.Auto_Sea_King,function(a)
 end)
 
 spawn(function()
-    while wait(1) do
+    while wait(0) do
         if Auto_Sea_King then
             pcall(function()
                 -- ตรวจสอบการเกิดของ SeaKing
@@ -3337,7 +3337,7 @@ spawn(function()
                 if seaKing and seaKing.Humanoid.Health > 0 then
                     -- ถ้า SeaKing เกิดแล้ว
                     repeat
-                        wait(0.1) -- รอระหว่างการดำเนินการ
+                        wait(0) -- รอระหว่างการดำเนินการ
                         EquipWeapon(WeaPon_Select)
                         TP(seaKing.HumanoidRootPart.CFrame * MethodFarm)
                         if Auto_Skill then
