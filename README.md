@@ -1,6 +1,6 @@
 repeat wait() until game:IsLoaded()
 repeat wait() until game:GetService("Players")
-
+wait(5)
 ----------------------------------- save
 function loadcheck()
     if isfile("RebornXer Hub king Lagacy"..game.Players.LocalPlayer.Name..".json") then
@@ -3023,27 +3023,30 @@ local Main = RenUi:AddTab("Farm","6026568198")
 	
 	Main:AddSeperatorRight("Sea Chack")
 
-	SeaChack = Main:AddLabelRight("")
-  
+	local SeaChack = Main:AddLabelRight("")
 
-             function SeaChackSent()
-				TimeSea = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKTimeLabel.Text
-				if game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.HDImage.Visible == true and  game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible == false then
+function SeaChackSent()
+    -- ดึงข้อมูลจาก SKTimeLabel
+    local TimeSea = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKTimeLabel.Text
 
-                    SeaChack:Set("Hydra       : "..TimeSea)    
-				if game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible == true and game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.HDImage.Visible == false then
-				SeaChack:Set("Sea King    : "..TimeSea)   
-                end
-                end
-                end
+    -- ตรวจสอบเงื่อนไขการแสดงผลของภาพ HDImage และ SKImage
+    local HDVisible = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.HDImage.Visible
+    local SKVisible = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible
 
-         spawn(function()
-        while task.wait() do
-            pcall(function()
-				SeaChackSent()
-            end)
-        end
-         end)
+    -- ปรับข้อความใน SeaChack ตามเงื่อนไข
+    if HDVisible and not SKVisible then
+        SeaChack:Set("Hydra       : " .. TimeSea)
+    elseif SKVisible and not HDVisible then
+        SeaChack:Set("Sea King    : " .. TimeSea)
+    end
+end
+
+-- เรียกใช้ฟังก์ชัน SeaChackSent ในลูปทุก ๆ interval ที่กำหนด
+spawn(function()
+    while task.wait() do
+        pcall(SeaChackSent)
+    end
+end)
 
 		 ShipChack = Main:AddLabelRight("")
   
