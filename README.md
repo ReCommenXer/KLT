@@ -10,7 +10,7 @@ function loadcheck()
     end
     end
     pcall(function()
-        _G.SaveSettings = {Select_Weapon = "",Select_Method = "",DistanceMob = "10",Auto_Sea_King = false,Auto_Ghost_Ship = false,Auto_Hydra = false,Hop_Mix = false,Auto_Hydra_Hop = false,Auto_Sea_King_Hop = false,Auto_Ghost_Ship_Hop = false,Auto_Skill = false,Black_Screen = false,Auto_Haki = false,Auto_Mr_Morther_Hop = false,Auto_Mr_Morther = false
+        _G.SaveSettings = {Select_Weapon = "Sword",Select_Method = "Upper",DistanceMob = "10",Auto_Sea_King = false,Auto_Ghost_Ship = false,Auto_Hydra = false,Hop_Mix = false,Auto_Hydra_Hop = false,Auto_Sea_King_Hop = false,Auto_Ghost_Ship_Hop = false,Auto_Skill = false,Black_Screen = false,Auto_Haki = false,Auto_Mr_Morther_Hop = false,Auto_Mr_Morther = false
         }
     end)
     function LoadSetting()
@@ -3037,7 +3037,48 @@ local Main = RenUi:AddTab("Farm","6026568198")
     local Setting = RenUi:AddTab("","")
     
     local S = RenUi:AddTabH("Top","14134158045")
-   
+	
+	
+	Main:AddSeperatorRight("Sea Chack")
+
+	SeaChack = Main:AddLabelRight("")
+  
+
+             function SeaChackSent()
+				if game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible == true and game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.HDImage.Visible == false then
+				TimeSea = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKTimeLabel.Text
+
+				SeaChack:Set("Sea King    : "..TimeSea)   
+                elseif game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.SKImage.Visible == false and game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.HDImage.Visible == true then
+
+                    SeaChack:Set("Hydra       : "..TimeSea)    
+                end
+                end
+
+         spawn(function()
+        while task.wait() do
+            pcall(function()
+				SeaChackSent()
+            end)
+        end
+         end)
+
+		 ShipChack = Main:AddLabelRight("")
+  
+
+             function ShipChackSent()		
+						TimeShip = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.StarterFrame.LegacyPoseFrame.SecondSea.GSTimeLabel.Text
+						ShipChack:Set("Ghost Ship  : "..TimeShip)   
+                end
+
+         spawn(function()
+        while task.wait() do
+            pcall(function()
+				ShipChackSent()
+            end)
+        end
+         end)
+
     Main:AddSeperatorRight("Settings")
     
 Setting:AddButtonLeft("Copy CFrame",function()
@@ -3482,13 +3523,13 @@ spawn(function()
 	while true do
 		pcall(function()
 		local playerStats = game:GetService("Players").LocalPlayer.PlayerStats
-		if Select_Weapon == "Melee" then
+		if _G.SaveSettings.Select_Weapon == "Melee" then
 			WeaPon_Select = playerStats.FightingStyle.Value
 			TypeWeapon = "FS"
-		elseif Select_Weapon == "Sword" then
+		elseif _G.SaveSettings.Select_Weapon == "Sword" then
 			WeaPon_Select = playerStats.SwordName.Value
 			TypeWeapon = "SW"
-		elseif Select_Weapon == "Fruit" then
+		elseif _G.SaveSettings.Select_Weapon == "Fruit" then
 			WeaPon_Select = playerStats.DFName.Value 
 			TypeWeapon = "DF"
 		end
@@ -3497,7 +3538,8 @@ spawn(function()
 end
 end)
 
-Main:AddDropdownRight("Select Method",{"Behind","Below","Upper"},_G.SaveSettings.Select_Method,function(value)
+   MethodList = {"Behind","Below","Upper"}
+Main:AddDropdownRight("Select Method",MethodList,_G.SaveSettings.Select_Method,function(value)
     Select_Method = value
 	_G.SaveSettings.Select_Method = Select_Method
 	SaveSetting()
@@ -3506,13 +3548,13 @@ end)
 spawn(function()
     while wait(1) do 
         pcall(function()
-            if Select_Method == "Behind" then
+            if _G.SaveSettings.Select_Method == "Behind" then
                 -- ไปด้านหลัง (Z)
                 MethodFarm = CFrame.new(0, 0, DistanceMob) -- กำหนดพิกัดที่ด้านหลัง
-            elseif Select_Method == "Below" then
+            elseif _G.SaveSettings.Select_Method == "Below" then
                 -- ไปข้างล่าง (Y) และหมุน 90 องศาในแกน X (เพื่อหมุนจากด้านล่าง)
                 MethodFarm = CFrame.new(0, -DistanceMob, 0) * CFrame.Angles(math.rad(90), 0, 0)
-            elseif Select_Method == "Upper" then
+            elseif _G.SaveSettings.Select_Method == "Upper" then
                 -- ไปข้างบน (Y) และหมุน -90 องศาในแกน X (เพื่อหมุนจากด้านบน)
                 MethodFarm = CFrame.new(0, DistanceMob, 0) * CFrame.Angles(math.rad(-90), 0, 0)
             else
